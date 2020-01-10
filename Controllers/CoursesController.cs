@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MyCourse.Controllers
 {
-    public class CourseController:Controller
+    public class CoursesController:Controller
     {
         public IActionResult Index()
         {
