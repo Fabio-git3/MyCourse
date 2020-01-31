@@ -3,13 +3,31 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MyCourse.Models.Options;
+using MyCourse.Models.Services.Application;
 
 namespace MyCourse.Models.Services.Infrastucture
 {
     public class SqliteDataBaseAccessor : IDataBaseAccessor
     {
+        private readonly ILogger<AdoNetCourseService> logger;
+        private readonly IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions;
+
+        public SqliteDataBaseAccessor(ILogger<AdoNetCourseService> logger,IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions)
+        {
+            this.logger = logger;
+            this.connectionStringsOptions = connectionStringsOptions;
+        }
+
+       
+
         public async Task<DataSet> QueryAsync(FormattableString formattableQuery)
         {
+            logger.LogInformation(formattableQuery.Format,formattableQuery.GetArguments());
+            
             var queryArgument=formattableQuery.GetArguments();
             var sqliteParameters= new List<SqliteParameter>();
 
@@ -20,8 +38,8 @@ namespace MyCourse.Models.Services.Infrastucture
             }
             string query=formattableQuery.ToString();
 
-
-           using(var conn= new SqliteConnection("Data Source=Data/MyCourse.db"))
+            string connectionString= connectionStringsOptions.CurrentValue.Default;
+           using(var conn= new SqliteConnection(connectionString))
            {
                await conn.OpenAsync();
                using( var cmd =new SqliteCommand(query,conn))
