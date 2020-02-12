@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MyCourse.Models.Options;
 using MyCourse.Models.Services.Application;
+using MyCourse.Models.ValueTypes;
 
 namespace MyCourse.Models.Services.Infrastucture
 {
@@ -32,6 +33,9 @@ namespace MyCourse.Models.Services.Infrastucture
             var sqliteParameters= new List<SqliteParameter>();
 
             for(int i=0; i<queryArgument.Length; i++){
+                if(queryArgument[i] is Sql){
+                    continue;
+                }
                 var parameter=new SqliteParameter(i.ToString(),queryArgument[i]);
                 sqliteParameters.Add(parameter);
                 queryArgument[i]="@"+i;

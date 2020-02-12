@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using MyCourse.Models.Options;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using MyCourse.Models.ValueTypes;
+using MyCourse.Models.InputModels;
 
 namespace MyCourse.Models.Services.Application
 {
@@ -55,9 +58,26 @@ namespace MyCourse.Models.Services.Application
             return courseDetailViewModel;
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync()
+        public async Task<List<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
-            FormattableString query= $"SELECT Id,Title,ImagePath,Author,Rating,FullPrice_Amount,FullPrice_Currency,CurrentPrice_Amount,CurrentPrice_Currency FROM COURSES";
+            // page= Math.Max(1,page);
+            // int limit=(int)(coursesOptions.CurrentValue.PerPage);
+            // int offset=(page-1) * limit;
+            // var orderOptions= coursesOptions.CurrentValue.Order;
+            // if(!orderOptions.Allow.Contains(orderby))
+            // {
+            //     orderby=orderOptions.By;
+            //     ascending=orderOptions.Ascending;
+            // }
+            // if(model.OrderBy=="CurrentPrice")
+            // {
+            //     model.OrderBy="CurrentPrice_Amount";
+            // }
+            string orderby = model.OrderBy == "CurrentPrice" ? "CurrentPrice_Amount" : model.OrderBy;
+            string direction= model.Ascending ? "ASC":"DESC";
+
+
+            FormattableString query= $"SELECT Id,Title,ImagePath,Author,Rating,FullPrice_Amount,FullPrice_Currency,CurrentPrice_Amount,CurrentPrice_Currency FROM COURSES WHERE Title LIKE {"%" + model.Search + "%"} ORDER BY {(Sql)orderby} {(Sql)direction} LIMIT {model.Limit} OFFSET {model.Offset};SELECT COUNT(*) FROM Courses WHERE Title LIKE {"%" + model.Search + "%"}";
             DataSet dataSet=await db.QueryAsync(query);
             var dataTable=dataSet.Tables[0];
             List<CourseViewModel> courseList=new List<CourseViewModel>();

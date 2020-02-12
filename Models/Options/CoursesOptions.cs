@@ -2,16 +2,10 @@
 
 namespace MyCourse.Models.Options
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
 
     public partial class CoursesOptions
     {
-        public long PerPage { get; set; }
+        public int PerPage { get; set; }
 
         public CoursesOrderOption Order { get; set; }
     }
@@ -25,6 +19,6 @@ namespace MyCourse.Models.Options
         public string[] Allow { get; set; }
     }
 
-   
+
 }
 
