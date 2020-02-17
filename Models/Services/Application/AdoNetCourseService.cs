@@ -27,6 +27,35 @@ namespace MyCourse.Models.Services.Application
             this.db = db;
             
         }
+
+        public async Task<List<CourseViewModel>> GetBestRatingCoursesAsync()
+        {
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Rating",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);
+
+                ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+                return result.Results;
+        }
+
+        public async Task<List<CourseViewModel>> GetMostRecentCoursesAsync()
+        {
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Id",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);
+
+                ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+                return result.Results;
+        }
+
         public async Task<CourseDetailViewModel> GetCourseAsync(int id)
         {
 
@@ -58,7 +87,7 @@ namespace MyCourse.Models.Services.Application
             return courseDetailViewModel;
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
+        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
             // page= Math.Max(1,page);
             // int limit=(int)(coursesOptions.CurrentValue.PerPage);
@@ -87,7 +116,13 @@ namespace MyCourse.Models.Services.Application
                 courseList.Add(course);
             }
 
-            return courseList;
+            ListViewModel<CourseViewModel> result = new ListViewModel<CourseViewModel>
+            {
+                Results = courseList,
+                TotalCount = Convert.ToInt32(dataSet.Tables[1].Rows[0][0])
+            };
+
+            return result;
         }
     }
 }

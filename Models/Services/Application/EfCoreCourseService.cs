@@ -47,7 +47,35 @@ namespace MyCourse.Models.Services.Application
             return detailViewModel;
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
+           public async Task<List<CourseViewModel>> GetBestRatingCoursesAsync()
+        {
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Rating",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);
+
+                ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+                return result.Results;
+        }
+        public async Task<List<CourseViewModel>> GetMostRecentCoursesAsync()
+        {
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Id",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);
+
+                ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+                return result.Results;
+        }
+
+
+        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
             //  page= Math.Max(1,);
             // int limit=(int)(coursesOptions.CurrentValue.PerPage);
@@ -108,7 +136,15 @@ namespace MyCourse.Models.Services.Application
             });//.ToListAsync();//è qui che viene inviata la query al db perche è qui che rendiamo effettiva la nostra volonta d leggere dai dal db
             
             List<CourseViewModel> courses=await queryLinq.ToListAsync();
-            return courses;
+            int totalCount = await queryLinq.CountAsync();
+
+             ListViewModel<CourseViewModel> result = new ListViewModel<CourseViewModel>
+            {
+                Results = courses,
+                TotalCount = totalCount
+            };
+
+            return result;
         }
     }
 }

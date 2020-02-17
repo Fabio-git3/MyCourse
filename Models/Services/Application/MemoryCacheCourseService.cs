@@ -17,6 +17,25 @@ namespace MyCourse.Models.Services.Application
             this.courseService = courseService;
             this.memoryCache = memoryCache;
         }
+
+        public Task<List<CourseViewModel>> GetBestRatingCoursesAsync()
+        {
+            return memoryCache.GetOrCreateAsync($"BestRatingCourses", cacheEntry => 
+            {
+                cacheEntry.SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
+                return courseService.GetBestRatingCoursesAsync();
+            });
+        }
+
+        public Task<List<CourseViewModel>> GetMostRecentCoursesAsync()
+        {
+            return memoryCache.GetOrCreateAsync($"MostRecentCourses", cacheEntry => 
+            {
+                cacheEntry.SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
+                return courseService.GetMostRecentCoursesAsync();
+            });
+        }
+
         public Task<CourseDetailViewModel> GetCourseAsync(int id)
         {
              return memoryCache.GetOrCreateAsync($"Course{id}", cacheEntry => 
@@ -26,7 +45,7 @@ namespace MyCourse.Models.Services.Application
             });
         }
 
-        public Task<List<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
+        public Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
             //Metto in cache i risultati solo per le prime 5 pagine del catalogo, che reputo essere
             //le più visitate dagli utenti, e che perciò mi permettono di avere il maggior beneficio dalla cache.
