@@ -19,7 +19,8 @@
                 <div class="rating" title="@Model.Rating">
                     <rating value="@Model.Rating"></rating>
                 </div>
-                 @for(int i=1; i<=5;i++){
+                
+                 @* @for(int i=1; i<=5;i++){
             if(Model.Rating>=i){
                 <i class="fas fa-star"></i>
             }
@@ -30,13 +31,14 @@
                 <i class="fa fa-times-circle"></i>
             }
 
-        } 
+        }  *@
 
                 <div class="price">
-                    @Model.CurrentPrice
+                    <price current-price="@Model.CurrentPrice" full-price="@Model.FullPrice"></price>
+                    @* @Model.CurrentPrice
         @if(!Model.CurrentPrice.Equals(Model.FullPrice)){
             <br> <s>@Model.FullPrice</s>
-        } 
+        }  *@
                 </div>
                 <img src="@Model.ImagePath" class="img-fluid course-image" alt="@Model.Title">
             </aside>

@@ -1,0 +1,33 @@
+@model CourseViewModel
+<hr>
+<div class="row">
+    <div class="col-md-1">
+        <img src="@Model.ImagePath" width="52" height="52" >
+    </div>
+    <div class="col-md-5">
+        @Model.Title<br>
+        <author>@Model.Author</author>   
+    </div>
+    <div class="col-md-2 rating" title="@Model.Rating">
+        <rating value="@Model.Rating"></rating>
+        @* @for(int i=1; i<=5;i++){
+            if(course.Rating>=i){
+                <i class="fa fa-star"></i>
+            }
+            else if(course.Rating>i-1){
+                <i class="fa fa-star-half"></i>
+            }
+            else{
+                <i class="fa fa-times-circle"></i>
+            } 
+
+        } *@
+        
+    </div>
+    <div class="col-md-2 price">
+         <price current-price="@Model.CurrentPrice" full-price="@Model.FullPrice"></price>
+    </div>
+    <div class="col-md-2 d-flex align-items-center">
+        <a class="btn btn-outline-primary" asp-action="Detail" asp-route-id="@Model.Id">Dettaglio</a>
+    </div>
+</div>
